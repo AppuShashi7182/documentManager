@@ -2,13 +2,15 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // material-ui
-import { Breadcrumbs, Grid, Card, CardContent, Typography, Button, Stack, Box, Divider, IconButton } from '@mui/material';
+import { Breadcrumbs, Grid, Card, CardContent, Typography, Button, Stack, Box, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from '@mui/material';
 import { Delete } from "@mui/icons-material";
 import { Description, PictureAsPdf, InsertDriveFile, Image } from "@mui/icons-material";
 
 // project import
 import Breadcrumb from 'component/Breadcrumb';
 import { getDocuments as fetchDocuments, deleteDocument } from 'services/document.service';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import Swal from 'sweetalert2';
 
 
 
@@ -17,7 +19,9 @@ class DocumentsView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            documents: []
+            documents: [],
+            isPopUpOpen: false,
+            selectedDocument: null
         };
     }
 
@@ -148,6 +152,15 @@ class DocumentsView extends React.Component {
                                             </Grid>
                                         </Box>
                                         <Box display="flex" alignItems="center" sx={{ ml: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                            <IconButton color="secondary"
+                                                // on click, open a popup to add email
+                                                onClick={() => {
+                                                    this.setState({ isPopUpOpen: true, selectedDocument: doc });
+                                                }}
+                                                
+                                            >
+                                                <SupervisedUserCircleIcon style={{ height: '100%' }} />
+                                            </IconButton>
                                             <IconButton color="secondary" onClick={() => this.handleDeleteDocument(doc)}>
                                                 <Delete style={{ height: '100%' }} />
                                             </IconButton>
@@ -159,6 +172,67 @@ class DocumentsView extends React.Component {
                         </Grid>
                     ))}
                 </Grid>
+
+                {/* PopUp */}
+                <Dialog open={this.state.isPopUpOpen} onClose={() => {
+                    this.setState({ isPopUpOpen: false });
+                }}>
+                    <DialogTitle>{this.state.selectedDocument?.name}</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            placeholder='Name'
+                            label="Name"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            placeholder='Email'
+                            label="Email"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            placeholder='Phone Number'
+                            label="Phone Number"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
+                        {/* <DialogContentText>
+                            <Typography variant="h6">Document Name: {this.state.selectedDocument?.name}</Typography>
+                            <Typography variant="body1">Document Type: {this.state.selectedDocument?.type}</Typography>
+                        </DialogContentText> */}
+                    </DialogContent>
+                    
+                    <DialogActions sx={{ alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+                        <Button onClick={() => {
+                            this.setState({ isPopUpOpen: false });
+                        }}>Close</Button>
+                        <Button
+                            onClick={() => {
+                                this.setState({ isPopUpOpen: false });
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Delegated Successfully',
+                                    confirmButtonText: 'OK',
+                                    toast: true,
+                                    position: 'bottom-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    // green background color
+                                    background: '#4CAF50',
+                                    color: '#fff',
+                                });
+                            }}
+                            color="primary"
+                            variant='contained'
+                        >
+                            Delegate
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </>
         );
     }
