@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 
 // material-ui
@@ -8,6 +8,7 @@ import { Card, Box, Button, CardHeader, Paper, Divider, Grid, Typography, Breadc
 // project import
 import Breadcrumb from 'component/Breadcrumb';
 import { gridSpacing } from 'config.js';
+import { uploadDocument } from "services/document.service";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -15,10 +16,17 @@ const UploadDocument = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [selectedFile, setSelectedFile] = useState(null);
+    const navigate = useNavigate(); // Use the useNavigate hook to navigate programmatically
 
-    const onSubmit = (data) => {
-        console.log("Uploaded Document:", { ...data, file: selectedFile });
-        alert("Document Uploaded Successfully!");
+    const onSubmit = async (data) => {
+
+        await uploadDocument({
+            id: String(new Date()), // Random ID for demo purposes
+            name: selectedFile.name,
+            size: selectedFile.size
+        })
+
+        navigate("/documents"); // Navigate to Upload Document Page
     };
 
     const handleFileChange = (event) => {
@@ -51,7 +59,7 @@ const UploadDocument = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Grid container spacing={2}>
                             {/* Document Name */}
-                            <Grid item xs={12} sm={4}>
+                            {/* <Grid item xs={12} sm={4}>
                                 <TextField
                                     fullWidth
                                     label="Document Name"
@@ -59,10 +67,10 @@ const UploadDocument = () => {
                                     error={!!errors.documentName}
                                     helperText={errors.documentName?.message}
                                 />
-                            </Grid>
+                            </Grid> */}
 
                             {/* Document Type */}
-                            <Grid item xs={12} sm={4}>
+                            {/* <Grid item xs={12} sm={4}>
                                 <TextField
                                     fullWidth
                                     select
@@ -75,10 +83,10 @@ const UploadDocument = () => {
                                     <MenuItem value="word">Word Document</MenuItem>
                                     <MenuItem value="image">Image</MenuItem>
                                 </TextField>
-                            </Grid>
+                            </Grid> */}
 
                             {/* Document Category */}
-                            <Grid item xs={12} sm={4}>
+                            {/* <Grid item xs={12} sm={4}>
                                 <TextField
                                     fullWidth
                                     label="Category"
@@ -86,7 +94,7 @@ const UploadDocument = () => {
                                     error={!!errors.category}
                                     helperText={errors.category?.message}
                                 />
-                            </Grid>
+                            </Grid> */}
 
                             {/* File Upload Field (Textbox + Button) */}
                             <Grid item xs={12} sm={12}>
