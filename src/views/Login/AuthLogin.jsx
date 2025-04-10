@@ -25,12 +25,14 @@ import { Formik } from 'formik';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Google from 'assets/images/social-google.svg';
+import { useNavigate } from 'react-router';
 
 // ==============================|| FIREBASE LOGIN ||============================== //
 
 const AuthLogin = ({ ...rest }) => {
   const theme = useTheme();
   const [showPassword, setShowPassword] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -156,7 +158,12 @@ const AuthLogin = ({ ...rest }) => {
             )}
 
             <Box mt={2}>
-              <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
+              {/* <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained"> */}
+              <Button color="primary" disabled={isSubmitting} fullWidth size="large" variant="contained"
+                onClick={() => {
+                  navigate('/dashboard/default');
+                }}
+              >
                 Log In
               </Button>
             </Box>
